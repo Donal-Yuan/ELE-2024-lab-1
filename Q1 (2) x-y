@@ -1,0 +1,49 @@
+from scipy.integrate import solve_ivp
+import matplotlib.pyplot as plt
+import numpy as np
+
+# question require
+# the range of t is [0, 2]
+# u(t) = 2 degree
+# x(0) = 0
+# y(0) = 0.3m
+# θ(0) = 5 degree
+# x' = v * cos(θ)
+# y' = v * sin(θ)
+# θ' = v * tan(u) / L
+# z' = f(z, u)
+# v = 5 m/s
+# L = 2.3m
+
+# state z = [x, y, θ]
+
+def dynamics(t, z):
+    x = z[0]
+    y = z[1]
+    theta = z[2]
+    return [v * np.cos(theta),
+            v * np.sin(theta),
+            v * np.tan(u) / L]
+
+t_final = 2
+u = 2. * np.pi / 180   # 2 degrees (in rad)
+v = 5.  # 5 m/s
+z_initial = [0, 0.3, 5 * np.pi / 180.]   # 5 degrees (in rad)
+L = 2.3  #2.3 m
+num_points = 100
+
+solution = solve_ivp(dynamics,
+                     [0, t_final],
+                     z_initial,
+                     t_eval=np.linspace(0, t_final, num_points))
+
+times = solution.t
+x_trajectory = solution.y[0]
+y_trajectory = solution.y[1]
+theta_trajectory = solution.y[2]
+
+plt.plot(x_trajectory, y_trajectory)
+plt.xlabel('x (m)')
+plt.ylabel('y (m)')
+plt.grid()
+plt.show()
